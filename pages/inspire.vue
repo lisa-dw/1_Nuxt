@@ -1,4 +1,5 @@
 <template>
+
   <v-row>
     <v-col class="text-center">
       <img
@@ -16,6 +17,7 @@
       </blockquote>
     </v-col>
   </v-row>
+
 </template>
 
 <script>
