@@ -5,7 +5,8 @@
     lazy-validation
   >
 
-
+    <v-col
+      lg="3">
       <v-text-field
         v-model="user.userid"
         :counter="10"
@@ -13,16 +14,20 @@
         label="아이디"
         required
       ></v-text-field>
+    </v-col>
 
       <v-text-field
+        class="full_screen"
         v-model="user.password"
         :rules="rules.password"
         label="비밀번호"
+        type="password"
         required
       ></v-text-field>
 
     <v-text-field
-      v-model="user.password"
+      class="half_screen"
+      v-model="inputPw"
       label="비밀번호 입력 확인"
       required
     ></v-text-field>
@@ -92,18 +97,20 @@ export default {
       },
       users: [],
 
+      inputPw:'',
+
 
       rules: {
         userid: [
           v => !!v || 'ID is required',
-          v => (v && v.length < 8) || '8자 이상 입력해주세요.'
+          v => (v && v.length > 8) || '8자 이상 입력해주세요.'
         ],
         name: [
           v => !!v || 'Name is required'
         ],
         password: [
           v => !!v || 'Name is required',
-          v => (v && v.length < 8) || '8자 이상 입력해주세요.'
+          v => (v && v.length > 8) || '8자 이상 입력해주세요.'
         ],
         email: [
           v => !!v || 'E-mail is required',
@@ -118,7 +125,7 @@ export default {
         ],
       },
 
-        valid: true,
+        valid: false,
         select: null,
 
 
@@ -137,13 +144,28 @@ export default {
 
     async Join(){
       console.log('함수실행')
-      const res = await axios.post(URL_user, {
 
-        ...this.user,
+      if (this.user.userid < 8){
+        alert("아이디는 8글자 이상 입력하세요.")
+        return;
+      }
 
-      })
+        if(this.inputPw == this.user.password) {
+            console.log('비밀번호가 같으면')
+
+            const res = await axios.post(URL_user, {
+              ...this.user,
+
+          })
         console.log('가입하기')
         console.log(res)
+      }
+
+
+
+
+
+
     },
 
 
@@ -157,6 +179,22 @@ export default {
 
 
 
-
 }
 </script>
+
+
+
+<style scoped>
+
+v-text-field{
+  width: 70%;
+}
+
+.full_screen{
+  width: 70% !important;
+}
+.half_screen {
+  width: 50% !important;
+}
+
+</style>
