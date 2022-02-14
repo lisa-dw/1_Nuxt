@@ -119,8 +119,8 @@ export default {
       rules: {
         userid: [
           v => !!v || '아이디를 입력해주세요.',
-          v => (v && v.length >= 8) || '8자 이상 입력해주세요. 영문, 숫자만 가능 합니다.',
           v => /.+[A-Za-z0-9].+/ || '영문, 숫자만 가능합니다.',
+          v => (v && v.length >= 8) || '8자 이상 입력해주세요. 영문, 숫자만 가능 합니다.',
         ],
         name: [
           v => !!v || '이름을 입력해주세요.'
@@ -167,11 +167,14 @@ export default {
 
 
 
-          if(this.inputPw == this.user.password && idCon==1 && emailCon==1 && phoneCon==1 ) {
-              const res = await axios.post(URL_user, {
-                ...this.user,
-            })
-        }
+         if(this.inputPw == this.user.password && idCon==1 && emailCon==1 && phoneCon==1 ) {
+           const res = await axios.post(URL_user, {
+             ...this.user,
+           })
+           alert("회원가입이 되었습니다.");
+           await this.$router.push('/');
+         }
+
 
           if(idCon==0){
             alert('중복된 아이디 입니다.')
@@ -185,7 +188,9 @@ export default {
           else if(phoneCon==0){
               alert('중복된 핸드폰번호 입니다.')
           }
-
+          else{
+            await Join();
+          }
 
     },
 
