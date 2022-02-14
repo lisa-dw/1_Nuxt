@@ -103,18 +103,18 @@ export default {
       rules: {
         userid: [
           v => !!v || 'ID is required',
-          v => (v && v.length > 8) || '8자 이상 입력해주세요.'
+          v => (v && v.length >= 8) || '8자 이상 입력해주세요.'
         ],
         name: [
           v => !!v || 'Name is required'
         ],
         password: [
           v => !!v || 'Name is required',
-          v => (v && v.length > 8) || '8자 이상 입력해주세요.'
+          v => (v && v.length >= 8) || '8자 이상 입력해주세요.'
         ],
         email: [
           v => !!v || 'E-mail is required',
-          v => /.+@.+/.test(v) || 'E-mail must be valid'
+          v => /.+@.+/.test(v) || '올바르게 입력 해주세요.'
         ],
         phone: [
           v => !!v || 'phone Number is required',
@@ -145,24 +145,19 @@ export default {
     async Join(){
       console.log('함수실행')
 
-      if (this.user.userid < 8){
-        alert("아이디는 8글자 이상 입력하세요.")
-        return;
-      }
 
-        if(this.inputPw == this.user.password) {
-            console.log('비밀번호가 같으면')
+          if(this.inputPw == this.user.password) {
 
-            const res = await axios.post(URL_user, {
-              ...this.user,
+              const res = await axios.post(URL_user, {
+                ...this.user,
 
-          })
-        console.log('가입하기')
-        console.log(res)
-      }
-
-
-
+            })
+          console.log('가입하기')
+          console.log(res)
+        }
+          else {
+            alert('비밀번호 확인이 틀렸습니다.')
+          }
 
 
 
