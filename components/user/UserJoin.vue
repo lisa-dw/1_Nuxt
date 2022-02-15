@@ -12,7 +12,9 @@
         label="아이디"
         required
       ></v-text-field>
-
+      <div class="span_padding">
+      <span v-show="validate.isUserIdDuplicated.duplicate === false">아이디 중복 해야 가입가능해요</span>
+      </div>
 
       <v-text-field
         v-model="user.password"
@@ -60,7 +62,7 @@
 
     <!---->
     <v-btn
-      :disabled="!valid"
+      :disabled="valid && this.duplicateCheck===false"
       color="success"
       @click="Join"
     >
@@ -73,12 +75,15 @@
     >
       아이디 중복확인
     </v-btn>
+
+
     <v-btn
       color="warning"
       @click="emailConfirm"
     >
       이메일 중복확인
     </v-btn>
+
     <v-btn
       color="warning"
       @click="phoneConfirm"
@@ -147,24 +152,38 @@ export default {
         valid: false,
         select: null,
 
+      validate: {
+        isEmailDuplicated: {
+          duplicate: false,
+          message: '이메일이 중복되었어요'
+        },
+        isUserIdDuplicated: {
+          duplicate: false,
+          message: '이메일이 중복되었어요'
+        },
+        isUserHpDuplicated: {
+          duplicate: false,
+          message: '이메일이 중복되었어요'
+        }
+      }
+
 
     }
   },
-
+  computed: {
+    duplicateCheck() {
+      return this.validate.isUserIdDuplicated.duplicate && this.validate.isUserHpDuplicated.duplicate && this.validate.isEmailDuplicated.duplicate
+    } // ## 변수가 길어서 함수로 만든 것.
+  },
 
   methods: {
 
     // 회원가입 메소드
     async Join(){
 
-      const res1 = await axios.get(URL_user + '/checkUserId/' + this.user.userid)
-      let idCon = res1.data
-      const res2 = await axios.get(URL_user + '/checkUserEM/' + this.user.email)
-      let emailCon = res2.data
-      const res3 = await axios.get(URL_user + '/checkUserPh/' + this.user.phone)
-      let phoneCon = res3.data
 
-         if(this.inputPw == this.user.password && idCon==1 && emailCon==1 && phoneCon==1 ) {
+
+       if(this.inputPw == this.user.password) {
 
            try {
              console.log('어디까지 왔니')
@@ -197,20 +216,8 @@ export default {
              }
            }
          }
-         else if(this.inputPw != this.user.password){
+         else {
            alert('비밀번호 확인이 틀렸습니다.')
-         }
-         else if(idCon==0){
-           alert('중복된 아이디 입니다.')
-         }
-         else if(this.inputPw !== this.user.password ){
-           alert('비밀번호가 틀렸습니다.')
-         }
-         else if(emailCon==0){
-           alert('중복된 이메일 입니다. ')
-         }
-         else if(phoneCon==0){
-           alert('중복된 핸드폰번호 입니다.')
          }
     },
 
@@ -218,12 +225,13 @@ export default {
     // id 중복확인 메소드
     async idConfirm(){
 
-      const res = await axios.get(URL_user + '/checkUserId/' + this.user.userid)
+      const res = await axios.get(`${URL_user}/checkUserId/${this.user.userid}`)
 
-      console.log(res)
-      if(res.data) alert('사용할 수 있는 아이디 입니다.')   // 서버에서 온 응답에 data가 있으면,(1이 응답이 오면),
+      if(res.data) {
+        alert('사용할 수 있는 아이디 입니다.');
+          this.validate.isUserIdDuplicated.duplicate = true;
+      }   // 서버에서 온 응답에 data가 있으면,(1이 응답이 오면),
       else alert('중복된 아이디 입니다.')          // 그렇지 않으면,
-
     },
 
     // 이메일 중복확인 메소드
@@ -231,12 +239,11 @@ export default {
 
       const res = await axios.get(URL_user + '/checkUserEM/' + this.user.email)
 
-      console.log(res)
-      alert(res)
-
-      if(res.data) alert('사용할 수 있는 이메일 입니다.')
+      if(res.data) {
+        alert('사용할 수 있는 이메일 입니다.');
+          this.validate.isEmailDuplicated.duplicate = true;
+      }
       else alert('중복된 이메일 입니다.')
-
     },
 
     // 전화번호 중복확인 메소드
@@ -244,9 +251,11 @@ export default {
 
       const res = await axios.get(URL_user + '/checkUserPh/' + this.user.phone)
 
-      if(res.data) alert('사용할 수 있는 전화번호 입니다.')
+      if(res.data){
+        alert('사용할 수 있는 전화번호 입니다.');
+        this.validate.isUserHpDuplicated.duplicate = true;
+      }
       else alert('중복된 전화번호 입니다.')
-
     },
 
   },
@@ -256,6 +265,13 @@ export default {
 
 
 <style scoped>
+
+.span_padding{
+  height: 10px;
+}
+span{
+  color: darkgray;
+}
 
 /*v-text-field{*/
 /*  width: 70%;*/
