@@ -67,9 +67,11 @@ export default {
   methods: {
 
     async login(){
-      const res = await axios.get(URL_user, {
 
-      })
+      const res = await axios.get(URL_user + '/Login'+ this.user.userid)
+      console.log('실행되나?')
+      console.log(res)
+      alert(res.data)
     },
 
 
