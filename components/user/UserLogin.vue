@@ -18,14 +18,27 @@
 
 
       <v-btn
-        color="warning"
+        color="success"
         @click="login"
       >
         로그인
       </v-btn>
 
+    <br><br><br>
 
+    <v-btn
+      color="warning"
+      @click="login"
+    >
+      아이디 찾기
+    </v-btn>
 
+    <v-btn
+      color="warning"
+      @click="login"
+    >
+      비밀번호 찾기
+    </v-btn>
 
 
 
