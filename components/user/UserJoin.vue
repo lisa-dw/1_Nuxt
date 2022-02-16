@@ -15,7 +15,7 @@
       <div class="span_padding" >
         <div v-show="this.validate.isUserIdDuplicated.show===false">
           <span v-if="validate.isUserIdDuplicated.duplicate === false">중복된 아이디 입니다</span>
-        </div>sdf
+        </div>
         <div v-show="this.validate.isUserIdDuplicated.show===true"/>
       </div>
 
@@ -35,6 +35,7 @@
       type="password"
       required
     ></v-text-field>
+    <div class="span_padding" />
 
     <v-text-field
       v-model="user.name"
@@ -42,6 +43,7 @@
       label="성명"
       required
     ></v-text-field>
+    <div class="span_padding" />
 
     <v-text-field
       v-model="user.email"
@@ -67,7 +69,7 @@
       <div v-show="this.validate.isUserHpDuplicated.show===false">
          <span v-show="validate.isUserHpDuplicated.duplicate === false">사용할 수 없는 핸드폰 번호 입니다.</span>
       </div>
-      <div v-show="this.validate.isUserHpDuplicated.show===true"/>
+      <div v-show="this.validate.isUserHpDuplicated.show===true">'-' 제외</div>
     </div>
 
     <v-text-field
@@ -80,7 +82,7 @@
 
 
     <v-btn
-      :disabled="!valid && this.duplicateCheck===true"
+      :disabled="!valid"
       color="success"
       @click="Join"
     >
@@ -142,7 +144,7 @@ export default {
       rules: {
         userid: [
           v => !!v || '아이디를 입력해주세요.',
-          // v => (v && /.+A-Za-z0-9.+/) || '영문, 숫자만 가능합니다.',
+          // /.+A-Za-z0-9.+/ || '영문, 숫자만 가능합니다.',
           v => (v && v.length >= 8) || '8자 이상 입력해주세요. 영문, 숫자만 가능 합니다.',
         ],
         name: [
@@ -157,7 +159,7 @@ export default {
         ],
         email: [
           v => !!v || 'E-mail을 입력해주세요.',
-          v => /.+@.+/.test(v) || '올바르게 입력 해주세요.'
+          v => /.+@.+\..+/.test(v) || '올바르게 입력 해주세요.'
         ],
         phone: [
           v => !!v || '핸드폰 번호를 입력해주세요. (\'-\' 제외)',
@@ -204,6 +206,7 @@ export default {
     // 회원가입 메소드
     async Join(){
 
+      this.$refs.form.validate()  // 유효성 검사 체크.
 
        // if(this.inputPw == this.user.password) {
 
@@ -293,10 +296,9 @@ export default {
 
 .span_padding{
   height: 20px;
-}
-span{
   color: darkgray;
 }
+
 
 /*v-text-field{*/
 /*  width: 70%;*/
