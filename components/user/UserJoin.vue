@@ -76,14 +76,51 @@
       <div v-show="this.validate.isUserHpDuplicated.show===true">'-' 제외</div>
     </div>
 
+
+
+
     <!--주소 입력-->
+
+    <section class="test">
+      <!--주소 검색색창-->
+      <div class="post-box" v-if="postOpen">
+        <template>
+          <VueDaumPostcode @complete="oncomplete" />  <!-- 주소 검색창 -->
+          <button id="closeBt" @click="close">창닫기</button> <!-- 창닫기 버튼 -->
+        </template>
+      </div>
+      <!--주소 찾기 버튼-->
+      <div class="form-box">
+        <div v-on:click="search">주소 찾기</div>
+      </div>
+    </section>
+
     <v-text-field
+      id="zip"
+      v-model="user.zip"
+      :rules="rules.zip"
+      label="우편번호"
+      required
+    ></v-text-field>
+
+    <v-text-field
+      id="address"
       v-model="user.address"
       :rules="rules.address"
       label="주소"
       required
+    ></v-text-field>
+
+    <v-text-field
+      id="subAddress"
+      v-model="user.subAddress"
+      :rules="rules.address"
+      label="상세주소"
+      ref="address"
+      required
       v-on:click="phoneConfirm"
     ></v-text-field>
+
 
 
     <!--회원가입 버튼-->
@@ -95,26 +132,6 @@
       회원가입
     </v-btn>
 
-<!--    <v-btn-->
-<!--      color="warning"-->
-<!--      @click="idConfirm"-->
-<!--    >-->
-<!--      아이디 중복확인-->
-<!--    </v-btn>-->
-<!--    -->
-<!--    <v-btn-->
-<!--      color="warning"-->
-<!--      @click="emailConfirm"-->
-<!--    >-->
-<!--      이메일 중복확인-->
-<!--    </v-btn>-->
-
-<!--    <v-btn-->
-<!--      color="warning"-->
-<!--      @click="phoneConfirm"-->
-<!--    >-->
-<!--      핸드폰번호 중복확인-->
-<!--    </v-btn>-->
 
 
 
@@ -124,12 +141,13 @@
 
 <script>
 import axios from 'axios'
+import {VueDaumPostcode} from "vue-daum-postcode"
 
 const URL_user = 'http://localhost:8000/api/users'
 
 export default {
   name: "UserJoin",
-
+  components: {VueDaumPostcode},
   data() {
     return {
 
@@ -140,19 +158,24 @@ export default {
         email: '',
         phone: '',
         address: '',
+        zip:'',
+        subAddress:'',
+        aa:'',
 
       },
       users: [],
 
       inputPw:'',
-
+      postOpen: false,
 
       rules: {
         userid: [
           v => !!v || '아이디를 입력해주세요.',
           // v => v == /.+\w.+/ || '영문, 숫자만 가능합니다.',
           // v => v === /[A-Z]/ || '영문, 숫자만 가능합니다.',
+          // v =>  /^[A-Za-z0-9]$/g.test(v) || '영문, 숫자만 가능합니다.',
           v => (v && v.length >= 8) || '8자 이상 입력해주세요. 영문, 숫자만 가능 합니다.',
+
         ],
         name: [
           v => !!v || '이름을 입력해주세요.'
@@ -174,6 +197,9 @@ export default {
         ],
         address: [
           v => !!v || '주소를 입력해주세요.'
+        ],
+        zip: [
+          v => !!v || '우편번호를 입력해주세요.'
         ],
       },
 
@@ -215,8 +241,6 @@ export default {
 
       this.$refs.form.validate()  // 유효성 검사 체크.
 
-       // if(this.inputPw == this.user.password) {
-
            try {
              console.log('어디까지 왔니')
              const res = await axios.post(URL_user, {
@@ -247,10 +271,6 @@ export default {
                }
              }
            }
-         // }
-         // else {
-         //   alert('비밀번호 확인이 틀렸습니다.')
-         // }
     },
 
 
@@ -293,6 +313,53 @@ export default {
       }
     },
 
+
+    // 주소찾기 메서드 ( search, oncomplete )
+    search: function () {
+      this.postOpen = true
+    },
+
+    oncomplete: function (data) {
+      if (data.userSelectedType === 'R') {  // 도로명 주소 선택
+        this.user.address = data.roadAddress;
+      } else {  // 지번 주소 선택
+        this.user.address = data.jibunAddress;
+      }
+
+      if(data.userSelectedType === 'R'){
+        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+          this.user.subAddress += data.bname;
+        }
+        // 건물명이 있고, 공동주택일 경우 추가한다.
+        if(data.buildingName !== '' && data.apartment === 'Y'){
+          this.user.subAddress += (this.user.subAddress !== '' ? ', ' + data.buildingName : data.buildingName);
+        }
+        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+        if(this.user.subAddress !== ''){
+          this.user.subAddress = ' (' + this.user.subAddress + ')';
+        }
+        // 조합된 참고항목을 해당 필드에 넣는다.
+        // this.user.subAddress = this.user.subAddress;
+
+      } else {
+        this.user.subAddress = '';
+      }
+
+      // 우편번호와 주소 정보를 해당 필드에 넣는다.
+      this.user.zip = data.zonecode;
+      // this.user.address = this.user.address;
+      this.$refs.address.focus();
+
+      this.postOpen = false
+    },
+
+    async close(){
+      this.postOpen = false
+    }
+
+
   },
 }
 </script>
@@ -304,6 +371,23 @@ export default {
 .span_padding{
   height: 20px;
   color: darkgray;
+}
+
+.form-box{
+  border-color: dimgray;
+  margin-top: 20px;
+  font-weight: bold;
+  height: 25px;
+  width: 80px;
+  text-align: center;
+  background-color: lightgray;
+}
+
+#closeBt{
+  height: 25px;
+  width: 60px;
+  text-align: center;
+  background-color: gainsboro;
 }
 
 
