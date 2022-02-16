@@ -12,8 +12,11 @@
         label="아이디"
         required
       ></v-text-field>
-      <div class="span_padding">
-      <span v-show="validate.isUserIdDuplicated.duplicate === false">아이디 중복 해야 가입가능해요</span>
+      <div class="span_padding" >
+        <div v-show="this.validate.isUserIdDuplicated.show===false">
+          <span v-if="validate.isUserIdDuplicated.duplicate === false">중복된 아이디 입니다</span>
+        </div>sdf
+        <div v-show="this.validate.isUserIdDuplicated.show===true"/>
       </div>
 
       <v-text-field
@@ -22,15 +25,16 @@
         label="비밀번호"
         type="password"
         required
+        @click="idConfirm"
       ></v-text-field>
 
     <v-text-field
       v-model="inputPw"
-      label="비밀번호 입력 확인"
+      :rules="rules.inputPw"
+      label="비밀번호 확인"
       type="password"
       required
     ></v-text-field>
-
 
     <v-text-field
       v-model="user.name"
@@ -45,51 +49,64 @@
       label="이메일"
       required
     ></v-text-field>
+    <div class="span_padding">
+      <div v-show="this.validate.isEmailDuplicated.show===false">
+       <span v-if="this.validate.isEmailDuplicated.duplicate === false">사용할 수 없는 이메일입니다.</span>
+      </div>
+      <div v-show="this.validate.isEmailDuplicated.show===true"/>
+    </div>
 
     <v-text-field
       v-model="user.phone"
       :rules="rules.phone"
       label="전화번호"
       required
+      v-on:click="emailConfirm"
     ></v-text-field>
+    <div class="span_padding">
+      <div v-show="this.validate.isUserHpDuplicated.show===false">
+         <span v-show="validate.isUserHpDuplicated.duplicate === false">사용할 수 없는 핸드폰 번호 입니다.</span>
+      </div>
+      <div v-show="this.validate.isUserHpDuplicated.show===true"/>
+    </div>
 
     <v-text-field
       v-model="user.address"
       :rules="rules.address"
       label="주소"
       required
+      v-on:click="phoneConfirm"
     ></v-text-field>
 
-    <!---->
+
     <v-btn
-      :disabled="valid && this.duplicateCheck===false"
+      :disabled="!valid && this.duplicateCheck===true"
       color="success"
       @click="Join"
     >
       회원가입
     </v-btn>
 
-    <v-btn
-      color="warning"
-      @click="idConfirm"
-    >
-      아이디 중복확인
-    </v-btn>
+<!--    <v-btn-->
+<!--      color="warning"-->
+<!--      @click="idConfirm"-->
+<!--    >-->
+<!--      아이디 중복확인-->
+<!--    </v-btn>-->
+<!--    -->
+<!--    <v-btn-->
+<!--      color="warning"-->
+<!--      @click="emailConfirm"-->
+<!--    >-->
+<!--      이메일 중복확인-->
+<!--    </v-btn>-->
 
-
-    <v-btn
-      color="warning"
-      @click="emailConfirm"
-    >
-      이메일 중복확인
-    </v-btn>
-
-    <v-btn
-      color="warning"
-      @click="phoneConfirm"
-    >
-      핸드폰번호 중복확인
-    </v-btn>
+<!--    <v-btn-->
+<!--      color="warning"-->
+<!--      @click="phoneConfirm"-->
+<!--    >-->
+<!--      핸드폰번호 중복확인-->
+<!--    </v-btn>-->
 
 
 
@@ -134,7 +151,9 @@ export default {
         password: [
           v => !!v || '비밀번호를 입력해주세요.',
           v => (v && v.length >= 8) || '8자 이상 입력해주세요. 영문, 숫자, 특수문자를 조합 해주세요.',
-          // v => (v && ) || '',
+        ],
+        inputPw:[
+          v => v === this.user.password || '비밀번호 확인이 틀렸습니다.',
         ],
         email: [
           v => !!v || 'E-mail을 입력해주세요.',
@@ -149,21 +168,25 @@ export default {
         ],
       },
 
-        valid: false,
+        valid: true,
         select: null,
+
 
       validate: {
         isEmailDuplicated: {
           duplicate: false,
-          message: '이메일이 중복되었어요'
+          message: '이메일이 중복되었습니다',
+          show: true,
         },
         isUserIdDuplicated: {
           duplicate: false,
-          message: '이메일이 중복되었어요'
+          message: '아이디가 중복되었습니다',
+          show: true,
         },
         isUserHpDuplicated: {
           duplicate: false,
-          message: '이메일이 중복되었어요'
+          message: '핸드폰 번호가 중복되었습니다',
+          show: true,
         }
       }
 
@@ -182,8 +205,7 @@ export default {
     async Join(){
 
 
-
-       if(this.inputPw == this.user.password) {
+       // if(this.inputPw == this.user.password) {
 
            try {
              console.log('어디까지 왔니')
@@ -199,10 +221,10 @@ export default {
              if (e.response.status === 422) {
 
                if (e.response.data.errors.userid) {
-                 alert('아이디는 영문, 숫자만 가능합니다.')
+                 alert('아이디는 8자 이상, 영문, 숫자만 가능합니다.')
                }
                else if (e.response.data.errors.password) {
-                 alert('비밀번호는 영문, 숫자, 특수문자를 조합 해주세요.')
+                 alert('비밀번호는 8자 이상, 영문, 숫자, 특수문자를 조합 해주세요.')
                }
                else if(e.response.data.errors.email){
                  alert('이메일을 올바르게 입력 해주세요.')
@@ -215,47 +237,50 @@ export default {
                }
              }
            }
-         }
-         else {
-           alert('비밀번호 확인이 틀렸습니다.')
-         }
+         // }
+         // else {
+         //   alert('비밀번호 확인이 틀렸습니다.')
+         // }
     },
 
 
     // id 중복확인 메소드
     async idConfirm(){
 
-      const res = await axios.get(`${URL_user}/checkUserId/${this.user.userid}`)
+      this.validate.isUserIdDuplicated.duplicate = false; // this.validate.isUserIdDuplicated.duplicate의 값을 초기화 시키기// 그렇지 않으면
+      this.validate.isUserIdDuplicated.show = true;
 
-      if(res.data) {
-        alert('사용할 수 있는 아이디 입니다.');
-          this.validate.isUserIdDuplicated.duplicate = true;
+      const res = await axios.get(`${URL_user}/checkUserId/${this.user.userid}`)
+      console.log({res})
+      if(res.data !== "") {
+          this.validate.isUserIdDuplicated.duplicate = true;  // true 이면 중복이 없다는 것.
       }   // 서버에서 온 응답에 data가 있으면,(1이 응답이 오면),
-      else alert('중복된 아이디 입니다.')          // 그렇지 않으면,
+      else this.validate.isUserIdDuplicated.show = false;
     },
+
 
     // 이메일 중복확인 메소드
     async emailConfirm(){
+      this.validate.isEmailDuplicated.duplicate = false;
+      this.validate.isEmailDuplicated.show = false;
 
       const res = await axios.get(URL_user + '/checkUserEM/' + this.user.email)
 
       if(res.data) {
-        alert('사용할 수 있는 이메일 입니다.');
           this.validate.isEmailDuplicated.duplicate = true;
       }
-      else alert('중복된 이메일 입니다.')
     },
 
     // 전화번호 중복확인 메소드
     async phoneConfirm(){
+      this.validate.isUserHpDuplicated.duplicate = false;
+      this.validate.isUserHpDuplicated.show = false;
 
       const res = await axios.get(URL_user + '/checkUserPh/' + this.user.phone)
 
       if(res.data){
-        alert('사용할 수 있는 전화번호 입니다.');
         this.validate.isUserHpDuplicated.duplicate = true;
       }
-      else alert('중복된 전화번호 입니다.')
     },
 
   },
@@ -267,7 +292,7 @@ export default {
 <style scoped>
 
 .span_padding{
-  height: 10px;
+  height: 20px;
 }
 span{
   color: darkgray;
