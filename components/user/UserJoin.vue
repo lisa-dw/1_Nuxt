@@ -5,7 +5,7 @@
     lazy-validation
   >
 
-
+    <!--아이디 입력-->
       <v-text-field
         v-model="user.userid"
         :rules="rules.userid"
@@ -13,12 +13,13 @@
         required
       ></v-text-field>
       <div class="span_padding" >
-        <div v-show="this.validate.isUserIdDuplicated.show===false">
-          <span v-if="validate.isUserIdDuplicated.duplicate === false">중복된 아이디 입니다</span>
+        <div v-show="this.validate.isUserIdDuplicated.show===false"> <!-- -->
+          <span v-show="validate.isUserIdDuplicated.duplicate === false">중복된 아이디 입니다</span>
         </div>
-        <div v-show="this.validate.isUserIdDuplicated.show===true"/>
+        <div v-show="this.validate.isUserIdDuplicated.show===true"/> <!-- -->
       </div>
 
+    <!--비밀번호 입력-->
       <v-text-field
         v-model="user.password"
         :rules="rules.password"
@@ -37,6 +38,7 @@
     ></v-text-field>
     <div class="span_padding" />
 
+    <!--이름 입력-->
     <v-text-field
       v-model="user.name"
       :rules="rules.name"
@@ -45,6 +47,7 @@
     ></v-text-field>
     <div class="span_padding" />
 
+    <!--이메일 입력-->
     <v-text-field
       v-model="user.email"
       :rules="rules.email"
@@ -58,6 +61,7 @@
       <div v-show="this.validate.isEmailDuplicated.show===true"/>
     </div>
 
+    <!--전화번호 입력-->
     <v-text-field
       v-model="user.phone"
       :rules="rules.phone"
@@ -72,6 +76,7 @@
       <div v-show="this.validate.isUserHpDuplicated.show===true">'-' 제외</div>
     </div>
 
+    <!--주소 입력-->
     <v-text-field
       v-model="user.address"
       :rules="rules.address"
@@ -81,6 +86,7 @@
     ></v-text-field>
 
 
+    <!--회원가입 버튼-->
     <v-btn
       :disabled="!valid"
       color="success"
@@ -144,7 +150,8 @@ export default {
       rules: {
         userid: [
           v => !!v || '아이디를 입력해주세요.',
-          // /.+A-Za-z0-9.+/ || '영문, 숫자만 가능합니다.',
+          // v => v == /.+\w.+/ || '영문, 숫자만 가능합니다.',
+          // v => v === /[A-Z]/ || '영문, 숫자만 가능합니다.',
           v => (v && v.length >= 8) || '8자 이상 입력해주세요. 영문, 숫자만 가능 합니다.',
         ],
         name: [
@@ -250,15 +257,15 @@ export default {
     // id 중복확인 메소드
     async idConfirm(){
 
-      this.validate.isUserIdDuplicated.duplicate = false; // this.validate.isUserIdDuplicated.duplicate의 값을 초기화 시키기// 그렇지 않으면
-      this.validate.isUserIdDuplicated.show = true;
+      this.validate.isUserIdDuplicated.duplicate = false; // .duplicate 값 초기화 시키기
+      this.validate.isUserIdDuplicated.show = true;       // .show 값 초기화 시키기
 
       const res = await axios.get(`${URL_user}/checkUserId/${this.user.userid}`)
+
       console.log({res})
       if(res.data !== "") {
-          this.validate.isUserIdDuplicated.duplicate = true;  // true 이면 중복이 없다는 것.
-      }   // 서버에서 온 응답에 data가 있으면,(1이 응답이 오면),
-      else this.validate.isUserIdDuplicated.show = false;
+          this.validate.isUserIdDuplicated.duplicate = true;  // 서버에서 받은 값. 중복되는 데이터가 없으면 서버에서 1이 온다. res.data가 존재하면 true로 반환.
+      }
     },
 
 
