@@ -1,4 +1,6 @@
 <template>
+  <v-row justify="center" align="center">
+    <v-col cols="12" sm="8" md="6">
   <v-form
     ref="form"
     v-model="valid"
@@ -13,10 +15,10 @@
         required
       ></v-text-field>
       <div class="span_padding" >
-        <div v-show="this.validate.isUserIdDuplicated.show===false"> <!-- -->
-          <span v-show="validate.isUserIdDuplicated.duplicate === false">중복된 아이디 입니다</span>
-        </div>
-        <div v-show="this.validate.isUserIdDuplicated.show===true"/> <!-- -->
+<!--        <div v-show="this.validate.isUserIdDuplicated.show===false"> &lt;!&ndash; &ndash;&gt;-->
+          <span v-show="this.validate.isUserIdDuplicated.duplicate === false">사용할 수 없는 아이디 입니다</span>
+<!--        </div>-->
+<!--        <div v-show="this.validate.isUserIdDuplicated.show===true"/> &lt;!&ndash; &ndash;&gt;-->
       </div>
 
     <!--비밀번호 입력-->
@@ -56,7 +58,7 @@
     ></v-text-field>
     <div class="span_padding">
       <div v-show="this.validate.isEmailDuplicated.show===false">
-       <span v-if="this.validate.isEmailDuplicated.duplicate === false">사용할 수 없는 이메일입니다.</span>
+       <span v-show="this.validate.isEmailDuplicated.duplicate === false">사용할 수 없는 이메일입니다.</span>
       </div>
       <div v-show="this.validate.isEmailDuplicated.show===true"/>
     </div>
@@ -71,16 +73,13 @@
     ></v-text-field>
     <div class="span_padding">
       <div v-show="this.validate.isUserHpDuplicated.show===false">
-         <span v-show="validate.isUserHpDuplicated.duplicate === false">사용할 수 없는 핸드폰 번호 입니다.</span>
+         <span v-show="this.validate.isUserHpDuplicated.duplicate === false">사용할 수 없는 핸드폰 번호 입니다.</span>
       </div>
       <div v-show="this.validate.isUserHpDuplicated.show===true">'-' 제외</div>
     </div>
 
 
-
-
     <!--주소 입력-->
-
     <section class="test">
       <!--주소 검색색창-->
       <div class="post-box" v-if="postOpen">
@@ -89,19 +88,21 @@
           <button id="closeBt" @click="close">창닫기</button> <!-- 창닫기 버튼 -->
         </template>
       </div>
-      <!--주소 찾기 버튼-->
-      <div class="form-box">
-        <div v-on:click="search">주소 찾기</div>
-      </div>
+
+      <!--주소 찾기-->
+<!--      <div class="form-box">-->
+        <v-text-field
+          id="zip"
+          v-model="user.zip"
+          :rules="rules.zip"
+          label="우편번호"
+          v-on:click="search"
+          required
+        ></v-text-field>
+<!--        <div v-on:click="search">주소 찾기</div>-->
+<!--      </div>-->
     </section>
 
-    <v-text-field
-      id="zip"
-      v-model="user.zip"
-      :rules="rules.zip"
-      label="우편번호"
-      required
-    ></v-text-field>
 
     <v-text-field
       id="address"
@@ -122,21 +123,20 @@
     ></v-text-field>
 
 
-
     <!--회원가입 버튼-->
     <v-btn
       :disabled="!valid"
       color="success"
       @click="Join"
     >
-      회원가입
+      Join
     </v-btn>
 
 
 
-
-
-  </v-form>
+   </v-form>
+  </v-col>
+</v-row>
 </template>
 
 <script>
@@ -173,7 +173,7 @@ export default {
           v => !!v || '아이디를 입력해주세요.',
           // v => v == /.+\w.+/ || '영문, 숫자만 가능합니다.',
           // v => v === /[A-Z]/ || '영문, 숫자만 가능합니다.',
-          // v =>  /^[A-Za-z0-9]$/g.test(v) || '영문, 숫자만 가능합니다.',
+          // v =>  /^[A-Za-z0-9]$/.test(v) || '영문, 숫자만 가능합니다.',
           v => (v && v.length >= 8) || '8자 이상 입력해주세요. 영문, 숫자만 가능 합니다.',
 
         ],
@@ -229,10 +229,26 @@ export default {
     }
   },
   computed: {
+
     duplicateCheck() {
       return this.validate.isUserIdDuplicated.duplicate && this.validate.isUserHpDuplicated.duplicate && this.validate.isEmailDuplicated.duplicate
-    } // ## 변수가 길어서 함수로 만든 것.
+    }, // ## 변수가 길어서 함수로 만든 것.
+
+    // 주소찾기 메서드 ( search, oncomplete )
+    search: function () {
+      this.postOpen = true
+    },
+
+    async close(){
+      this.postOpen = false
+    }
+
+
+
   },
+
+
+
 
   methods: {
 
@@ -242,7 +258,6 @@ export default {
       this.$refs.form.validate()  // 유효성 검사 체크.
 
            try {
-             console.log('어디까지 왔니')
              const res = await axios.post(URL_user, {
                ...this.user,
              })
@@ -313,17 +328,12 @@ export default {
       }
     },
 
-
-    // 주소찾기 메서드 ( search, oncomplete )
-    search: function () {
-      this.postOpen = true
-    },
-
+    // 주소 찾기 api 메서드
     oncomplete: function (data) {
-      if (data.userSelectedType === 'R') {  // 도로명 주소 선택
-        this.user.address = data.roadAddress;
-      } else {  // 지번 주소 선택
-        this.user.address = data.jibunAddress;
+      if (data.userSelectedType === 'R') {
+        this.user.address = data.roadAddress;  // 도로명 주소 선택
+      } else {
+        this.user.address = data.jibunAddress;  // 지번 주소 선택
       }
 
       if(data.userSelectedType === 'R'){
@@ -346,7 +356,6 @@ export default {
       } else {
         this.user.subAddress = '';
       }
-
       // 우편번호와 주소 정보를 해당 필드에 넣는다.
       this.user.zip = data.zonecode;
       // this.user.address = this.user.address;
@@ -354,11 +363,6 @@ export default {
 
       this.postOpen = false
     },
-
-    async close(){
-      this.postOpen = false
-    }
-
 
   },
 }

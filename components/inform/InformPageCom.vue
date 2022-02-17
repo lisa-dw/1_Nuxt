@@ -1,28 +1,16 @@
 <template>
 
-
+  <div>
+    sdfsdfsd
+  </div>
 
 </template>
 
-
-
 <script>
 export default {
-  name: "NewsList",
-
-  data(){
-    return{
-
-    }
-  },
-
-  methods: {
-
-  },
+  name: "InformPage"
 }
 </script>
-
-
 
 <style scoped>
 

@@ -93,14 +93,15 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: 'News & Information',
+          to: '/inform/informList'
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'News & Information',
-          to: '/news/newsMainList'
+          title: 'Inspire',
+          to: '/inspire'
         },
+
       ],
       miniVariant: false,
       right: true,
