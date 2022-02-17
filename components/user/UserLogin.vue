@@ -1,4 +1,7 @@
 <template>
+  <v-row justify="center" align="center">
+    <v-col cols="14" sm="8" md="6">
+
   <v-form
     ref="form"
     v-model="valid"
@@ -39,10 +42,11 @@
     >
       비밀번호 찾기
     </v-btn>
-
-
-
   </v-form>
+
+
+    </v-col>
+  </v-row>
 </template>
 
 <script>

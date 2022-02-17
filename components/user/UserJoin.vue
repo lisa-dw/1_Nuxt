@@ -5,6 +5,7 @@
     ref="form"
     v-model="valid"
     lazy-validation
+    id ="form"
   >
 
     <!--아이디 입력-->
@@ -15,10 +16,10 @@
         required
       ></v-text-field>
       <div class="span_padding" >
-<!--        <div v-show="this.validate.isUserIdDuplicated.show===false"> &lt;!&ndash; &ndash;&gt;-->
+        <div v-show="this.validate.isUserIdDuplicated.show===false"> <!-- 처음 화면에 중복 메세지를  -->
           <span v-show="this.validate.isUserIdDuplicated.duplicate === false">사용할 수 없는 아이디 입니다</span>
-<!--        </div>-->
-<!--        <div v-show="this.validate.isUserIdDuplicated.show===true"/> &lt;!&ndash; &ndash;&gt;-->
+        </div>
+        <div v-show="this.validate.isUserIdDuplicated.show===true"/> <!-- -->
       </div>
 
     <!--비밀번호 입력-->
@@ -234,20 +235,7 @@ export default {
       return this.validate.isUserIdDuplicated.duplicate && this.validate.isUserHpDuplicated.duplicate && this.validate.isEmailDuplicated.duplicate
     }, // ## 변수가 길어서 함수로 만든 것.
 
-    // 주소찾기 메서드 ( search, oncomplete )
-    search: function () {
-      this.postOpen = true
-    },
-
-    async close(){
-      this.postOpen = false
-    }
-
-
-
   },
-
-
 
 
   methods: {
@@ -293,7 +281,7 @@ export default {
     async idConfirm(){
 
       this.validate.isUserIdDuplicated.duplicate = false; // .duplicate 값 초기화 시키기
-      this.validate.isUserIdDuplicated.show = true;       // .show 값 초기화 시키기
+      this.validate.isUserIdDuplicated.show = false;       // .show 값 초기화 시키기
 
       const res = await axios.get(`${URL_user}/checkUserId/${this.user.userid}`)
 
@@ -364,6 +352,15 @@ export default {
       this.postOpen = false
     },
 
+    // 주소찾기 메서드 ( search, oncomplete )
+    search: function () {
+      this.postOpen = true
+    },
+
+    async close(){
+      this.postOpen = false
+    }
+
   },
 }
 </script>
@@ -394,16 +391,8 @@ export default {
   background-color: gainsboro;
 }
 
-
-/*v-text-field{*/
-/*  width: 70%;*/
-/*}*/
-
-/*.full_screen{*/
-/*  width: 70% !important;*/
-/*}*/
-/*.half_screen {*/
-/*  width: 40% !important;*/
-/*}*/
+#form{
+  margin-top: 30px;
+}
 
 </style>
