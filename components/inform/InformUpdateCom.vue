@@ -31,6 +31,8 @@
           v-model="inform.content"
         ></v-textarea>
 
+        <sample-com ref="UpdatePicture"/>
+
         <v-btn
           :disabled="!valid"
           @click="update">수정하기</v-btn>
@@ -45,13 +47,13 @@
 
 <script>
 import axios from "axios";
+import SampleCom from "./sampleCom";
 
 const URL_informs = 'http://127.0.0.1:8000/api/informs';
 
 export default {
   name: "InformUpdateCom",
-
-
+  components: {SampleCom},
   data(){
     return{
 
@@ -60,6 +62,7 @@ export default {
         content: '',            // 글내용
         user_userid: '',        //글쓴이(FK)
         id:'',                  //글번호
+        imgSrc:'',
       },
       informs:[],
       valid: true,
@@ -71,13 +74,18 @@ export default {
   },
 
   mounted() {
+    console.log('마운티드 됐니?')
       this.getPage();
+    console.log('마운티드 됨?')
     },
 
 
   methods:{
 
     async update(){
+
+
+      this.inform.imgSrc=this.$refs.UpdatePicture.inform.imgSrc
 
       console.log('Start: update : res')
       console.log(res)
@@ -102,7 +110,17 @@ export default {
 
     // 데이터 가져오기 (mounted함)
     async getPage(){
-      const page = await axios.get(URL_informs+'/'+1);
+
+      const test = URL_informs+'/'+this.informId;
+      console.log('데이터 가져오는 경로 : '+test)
+
+      let preUrl = document.referrer;
+      console.log('이전 경로 : ' + preUrl)
+
+      let beforeInformId = preUrl.substr(34)
+      console.log(beforeInformId)
+
+      const page = await axios.get(URL_informs+'/'+beforeInformId);
       this.inform = page.data
     },
 

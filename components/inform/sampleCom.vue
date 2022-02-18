@@ -1,14 +1,11 @@
 <template>
   <div>
+    <!-- 파일 post 하는 form과 버튼 부분. -->
     <form method="post" enctype="multipart/form-data">
-      <div>
-        <label for="chooseFile">
-          Click
-        </label>
-      </div>
       <input ref="image" @change="uploadImg()" type="file" id="chooseFile" name="chooseFile" accept="image/*">
     </form>
-    <img  :src="image" alt="" style="width: 500px; height: auto;">
+    <!-- 미리보기 -->
+    <img  :src="inform.imgSrc" alt="" style="width: 500px; height: auto;">
   </div>
 </template>
 
@@ -18,18 +15,25 @@ export default {
 
   data() {
     return {
-      image : ''
+      inform:{
+        imgSrc : '',
+      },
+
     }
   },
   methods: {
     uploadImg() {
-      console.log('들어왔다')
+      // console.log('들어왔다')
       var image = this.$refs.image.files[0]
-      const url = URL.createObjectURL(image)
-      this.image = url
+      const url = URL.createObjectURL(image)  // 가져온 파일을 ObjectURL로 바꿈.
+      this.inform.imgSrc = url
 
-      console.log(url)
-      console.log(this.image)
+
+
+      this.$emit('click', this.inform.imgSrc)  // 부모컨포넌트에 this.inform.imgSrc 데이터를 보냄.
+
+      // console.log(url)
+      // console.log(this.inform.imgSrc)
     }
   }
 }

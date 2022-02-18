@@ -2,13 +2,8 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
 
-      <v-simple-table id="table1">
-<!--        <thead>-->
-<!--          <th>글제목</th>-->
-<!--          <th>작성자</th>-->
-<!--          <th>작성날짜</th>-->
-<!--        </thead>-->
-
+      <!-- 상단 : 글제목, 작성자, 날짜 -->
+      <v-simple-table>
         <tbody>
         <tr>
           <th style="width: 65%">{{ inform.title }}</th>
@@ -18,10 +13,13 @@
         </tbody>
       </v-simple-table>
 
+      <!-- 이미지 -->
+      <div id="imgDiv">
+        <v-img :src="inform.imgSrc" max-height="300" ></v-img>
+      </div>
       <div id="content">
         <br> {{inform.content}} <br>
       </div>
-
 
 
       <v-btn id="BT" :to="goMainList">목록으로</v-btn>
@@ -60,6 +58,7 @@ data () {
       user_userid: '',       //글쓴이(FK)
       id: '',                  // 글번호
       updated_at: '',
+      imgSrc:'',
 
     },
 
@@ -67,8 +66,7 @@ data () {
 
     goMainList:'/inform/informList',
     writePage:'/inform/informCreate',
-    updatePage:'/inform/informUpdate/${inform.id}',
-
+    updatePage:'/inform/update/${this.inform.id}',
 
   }
 },
@@ -110,20 +108,24 @@ data () {
 
 <style scoped>
 
-#table1{
-  margin-top: 50px;
-}
-
 
 #BT{
   margin: 5px;
 }
 
-#content{
-  height: 500px;
-  border-bottom: darkgrey solid;
+#imgDiv{
   border-top: darkgrey solid 1px;
+  padding-top: 20px;
   margin-top: 15px;
+}
+
+#content{
+  /*height: 500px;*/
+  padding-top: 30px;
+  padding-bottom: 70px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-bottom: darkgrey solid;
   margin-bottom: 20px;
 }
 
