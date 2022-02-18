@@ -45,8 +45,8 @@
 <script>
 import axios from "axios";
 
-const URL_informs = 'http://127.0.0.1:8000/api/informs/1' ;
-// const URL_informs = 'http://127.0.0.1:8000/api/informs/${inform.id}' ;
+// const URL_informs = 'http://127.0.0.1:8000/api/informs/1' ;
+const URL_informs = 'http://127.0.0.1:8000/api/informs/' ;
 
 export default {
   name: "InformVeiwPageCom",
@@ -74,6 +74,7 @@ data () {
 },
 
   mounted() {
+    console.log(`여긴 informViewPage이고 props는 ${this.informId}`)
     this.getPage();
   },
 
@@ -85,17 +86,21 @@ data () {
 
     // 데이터 가져오기 (mounted함)
     async getPage(){
-      const page = await axios.get(URL_informs);
+      const page = await axios.get(URL_informs + this.informId);
       this.inform = page.data
     },
 
     //글 삭제
     async delete(){
-      const page = await axios.delete(URL_informs+'/'+this.inform.id)
+      const page = await axios.delete(URL_informs + this.inform.id)
       console.log(page)
+      this.$router.go(-1);
     },
 
   },
+  props:{
+    informId: String
+  }
 
 }
 

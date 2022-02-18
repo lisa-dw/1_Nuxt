@@ -10,6 +10,7 @@
       <v-text-field
         v-model="user.userid"
         label="아이디"
+        rules=""
         required
       ></v-text-field>
 
@@ -30,6 +31,7 @@
     <br><br><br>
 
     <v-btn
+      :disabled="!valid"
       color="warning"
       @click="login"
     >
@@ -64,6 +66,15 @@ export default {
         userid: '',
         password:'',
       },
+      rules:{
+        userid: [
+          v => !!v || '아이디를 입력해주세요.',
+        ],
+        password:[
+          v => !!v || '비밀번호를 입력해주세요.',
+        ],
+      },
+      valid:true,
 
     }
    },

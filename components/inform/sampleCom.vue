@@ -1,24 +1,13 @@
 <template>
-
-  <!-- 배너 삽입하기.  -->
-
-
-
+$END$
 </template>
 
 <script>
 export default {
-  name: "NewsMainList",
-
-
-
+name: "sampleCom"
 }
 </script>
 
 <style scoped>
-
-#searchPart{
-
-}
 
 </style>

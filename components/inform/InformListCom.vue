@@ -9,9 +9,9 @@
         :items="inform"
         :search="search"
       >
-        <template v-slot:inform.title="{ item }">
-          <NuxtLink :to="'/inform/informVeiwPage/${inform.id}'">
-            {{ inform.title }}
+        <template v-slot:item.title="{ item }">
+          <NuxtLink :to="`/inform/view/${item.id}`">
+            {{ item.title }}
           </NuxtLink>
         </template>
 
@@ -112,11 +112,11 @@ export default {
 
     },
 
-    async search(){
-
-      const res = await axios.get()
-
-    }
+    // async search(){
+    //
+    //   const res = await axios.get()
+    //
+    // }
 
   },
 

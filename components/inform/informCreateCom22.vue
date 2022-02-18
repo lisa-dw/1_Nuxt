@@ -1,7 +1,4 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-
       <v-form
         ref="form"
         v-model="valid"
@@ -31,24 +28,29 @@
             v-model="inform.content"
           ></v-textarea>
 
+
+        <inform-create-com-pic
+          ref="childComponent"
+          :file="file"
+        />
+
         <v-btn
           :disabled="!valid"
           @click="create">글쓰기</v-btn>
 
       </v-form>
 
-    </v-col>
-  </v-row>
 </template>
 
 <script>
 import axios from "axios";
+import InformCreateComPic from "./InformCreateComPic";
 
 const URL_informs = 'http://127.0.0.1:8000/api/informs';
 
 export default {
   name: "informCreateCom",
-
+  components: {InformCreateComPic},
   data(){
     return{
 
@@ -56,28 +58,42 @@ export default {
         title: '',              // 글제목
         content: '',            // 글내용
         user_userid: '',        //글쓴이(FK)
+        imgSrc: '',
       },
       informs:[],
       valid: true,
       rules: [
         v => !!v || '내용을 입력해주세요',
       ],
-
+      file:{}
     }
   },
 
   computed:{
   //
   },
+  watch:{
+    file(v){
+      console.log(v)
+    }
+  },
 
   methods:{
 
     async create(){
+      console.log('create 함수')
+
+      this.$refs.childComponent.submit();
+      console.log('자식 함수 실행')
+      this.inform.imgSrc = this.components.InformCreateComPic.data().image;
+      console.log('this.inform.imgSrc')
+      console.log(this.inform.imgSrc)
 
       const res = await axios.post(URL_informs, {
         title: this.inform.title,
         content: this.inform.content,
         user_userid:this.inform.user_userid,
+        imgSrc:this.inform.imgSrc,
       })
 
       console.log('create : res')
@@ -87,10 +103,16 @@ export default {
       console.log('this.$route.params.id')
       console.log(this.$route)
 
+      console.log('sub uploadImg : ', this.$refs.childComponent);
+
+
       // return this.$router.push('/inform/informVeiwPage'+'${this.inform.id}')
 
       await this.$router.push('/inform/informVeiwPage')
 
+    },
+    childComponent(){
+      console.log('asdasd')
     }
 
   },
