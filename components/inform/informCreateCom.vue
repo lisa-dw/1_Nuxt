@@ -1,7 +1,4 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-
       <v-form
         ref="form"
         v-model="valid"
@@ -31,24 +28,26 @@
             v-model="inform.content"
           ></v-textarea>
 
+        <sample-com/>
+
         <v-btn
           :disabled="!valid"
           @click="create">글쓰기</v-btn>
 
       </v-form>
 
-    </v-col>
-  </v-row>
 </template>
 
 <script>
 import axios from "axios";
+import InformCreateComPic from "./InformCreateComPic";
+import SampleCom from "./sampleCom";
 
 const URL_informs = 'http://127.0.0.1:8000/api/informs';
 
 export default {
   name: "informCreateCom",
-
+  components: {SampleCom, InformCreateComPic},
   data(){
     return{
 
@@ -56,42 +55,78 @@ export default {
         title: '',              // 글제목
         content: '',            // 글내용
         user_userid: '',        //글쓴이(FK)
+        imgSrc: {},
       },
       informs:[],
       valid: true,
       rules: [
         v => !!v || '내용을 입력해주세요',
       ],
+      file:{},
 
     }
   },
 
-  computed:{
-  //
+  props:{
+    file: Object
+  },
+
+
+  watch:{
+    file(v){
+      console.log(v)
+    }
   },
 
   methods:{
 
     async create(){
 
+      // this.inform.imgSrc=this.$refs
+      console.log('create 함수')
+
+      // const formData = new FormData();
+      // console.log(formData)
+      console.log(this.inform.imgSrc)
+      // this.inform.imgSrc=formData.append("image", this.inform.imgSrc);
+      console.log(this.inform.imgSrc)
+
+
       const res = await axios.post(URL_informs, {
         title: this.inform.title,
         content: this.inform.content,
         user_userid:this.inform.user_userid,
+        imgSrc:this.inform.imgSrc,
       })
 
-      console.log('create : res')
-      console.log(res)
-      console.log('create : res.data')
-      console.log(res.data)
-      console.log('this.$route.params.id')
-      console.log(this.$route)
+      // console.log('create : res')
+      // console.log(res)
+      // console.log('create : res.data')
+      // console.log(res.data)
+      // console.log('this.$route.params.id')
+      // console.log(this.$route)
+
+      console.log('sub uploadImg : ', this.$refs.childComponent);
+
 
       // return this.$router.push('/inform/informVeiwPage'+'${this.inform.id}')
 
       await this.$router.push('/inform/informVeiwPage')
 
-    }
+    },
+
+
+
+    // 파일 변경 시 이벤트 핸들러
+    selectFile(file) {
+      console.log({file})
+      console.log(file)
+      this.inform.imgSrc = file;
+      console.log(file)
+      console.log(file.name)
+      console.log(this.inform.imgSrc)
+
+    },
 
   },
 

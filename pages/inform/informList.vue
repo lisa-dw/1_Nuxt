@@ -1,6 +1,6 @@
 <template>
 
-<inform-list-com/>
+<inform-list-com id="list"/>
 
 </template>
 
@@ -17,5 +17,9 @@ export default {
 </script>
 
 <style scoped>
+
+#list{
+  margin-top: 30px;
+}
 
 </style>

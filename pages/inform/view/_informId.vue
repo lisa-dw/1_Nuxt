@@ -1,3 +1,4 @@
+<!-- 페이지 파일 -->
 <template>
   <inform-veiw-page-com
     :informId="informId"
