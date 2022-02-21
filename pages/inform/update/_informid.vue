@@ -11,6 +11,13 @@ export default {
   components: {InformUpdateCom},
   data(){
     return{
+      inform: {
+        title: '',              // 글제목
+        content: '',            // 글내용
+        user_userid: '',        //글쓴이(FK)
+        id:'',                  //글번호
+        imgSrc:'',
+      },
       informId:'',
       informData: {
 

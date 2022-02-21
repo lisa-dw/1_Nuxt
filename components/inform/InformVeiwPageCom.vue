@@ -21,20 +21,11 @@
         <br> {{inform.content}} <br>
       </div>
 
-
       <v-btn id="BT" :to="goMainList">목록으로</v-btn>
       <v-spacer />
       <v-btn id="BT" :to="writePage">글쓰기</v-btn>
-      <v-btn id="BT" :to="updatePage">글수정</v-btn>
+      <v-btn id="BT" :to="`${updatePage}${inform.id}`">글수정</v-btn>
       <v-btn id="BT" @click="this.delete">글삭제</v-btn>
-
-
-<!--      <v-img-->
-<!--        lazy-src="https://picsum.photos/id/11/10/6"-->
-<!--        max-height="300"-->
-<!--        max-width="500"-->
-<!--        src="https://picsum.photos/id/11/500/300"-->
-<!--      ></v-img>-->
 
     </v-col>
   </v-row>
@@ -66,7 +57,7 @@ data () {
 
     goMainList:'/inform/informList',
     writePage:'/inform/informCreate',
-    updatePage:'/inform/update/${this.inform.id}',
+    updatePage:'/inform/update/',
 
   }
 },
@@ -84,7 +75,7 @@ data () {
 
     // 데이터 가져오기 (mounted함)
     async getPage(){
-      const page = await axios.get(URL_informs + this.informId);
+      const page = await axios.get(URL_informs + this.$route.params.informId);
       this.inform = page.data
     },
 
@@ -96,9 +87,9 @@ data () {
     },
 
   },
-  props:{
-    informId: String
-  }
+  // props:{
+  //   informId: String
+  // }
 
 }
 

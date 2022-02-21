@@ -31,12 +31,15 @@
           v-model="inform.content"
         ></v-textarea>
 
-        <sample-com ref="UpdatePicture"/>
+        <!-- 사진 입력하는 컴포넌트 -->
+        <sample-com v-model="inform.imgSrc" ref="UpdatePicture" :inform.imgSrc = 'inform.imgSrc'/>
+
 
         <v-btn
           :disabled="!valid"
           @click="update">수정하기</v-btn>
         <v-btn @click="this.delete">삭제하기</v-btn>
+
 
       </v-form>
 
@@ -75,6 +78,7 @@ export default {
 
   mounted() {
     console.log('마운티드 됐니?')
+    console.log(this.informId)
       this.getPage();
     console.log('마운티드 됨?')
     },
@@ -82,9 +86,8 @@ export default {
 
   methods:{
 
+
     async update(){
-
-
       this.inform.imgSrc=this.$refs.UpdatePicture.inform.imgSrc
 
       console.log('Start: update : res')
@@ -92,7 +95,7 @@ export default {
 
       const res = await axios.put(URL_informs +'/' + this.inform.id,
         {
-          ... this.item
+          ... this.inform
       })
       console.log('update : res')
       console.log(res)
@@ -110,19 +113,16 @@ export default {
 
     // 데이터 가져오기 (mounted함)
     async getPage(){
+      console.log('this.$route.params.informId')
+      console.log(this.$route.params.informid)
 
-      const test = URL_informs+'/'+this.informId;
-      console.log('데이터 가져오는 경로 : '+test)
-
-      let preUrl = document.referrer;
-      console.log('이전 경로 : ' + preUrl)
-
-      let beforeInformId = preUrl.substr(34)
-      console.log(beforeInformId)
-
-      const page = await axios.get(URL_informs+'/'+beforeInformId);
+      const page = await axios.get(URL_informs + '/'+ this.$route.params.informid);
       this.inform = page.data
     },
+
+    props:{
+      informId: String
+    }
 
 
   },

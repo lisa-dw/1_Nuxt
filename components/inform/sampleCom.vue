@@ -18,12 +18,19 @@ export default {
       inform:{
         imgSrc : '',
       },
+      informImgSrc:'',
 
     }
   },
+
   methods: {
+
     uploadImg() {
-      // console.log('들어왔다')
+      console.log(this.informImgSrc)
+      console.log(this.informImgSrc)
+
+      // this.informImgSrc = '';
+
       var image = this.$refs.image.files[0]
       const url = URL.createObjectURL(image)  // 가져온 파일을 ObjectURL로 바꿈.
       this.inform.imgSrc = url
@@ -35,7 +42,11 @@ export default {
       // console.log(url)
       // console.log(this.inform.imgSrc)
     }
-  }
+  },
+
+  // props:{
+  //   inform.imgSrc: String,
+  // },
 }
 </script>
 
