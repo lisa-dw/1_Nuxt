@@ -29,6 +29,7 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
+  // plugins 폴더에 설정해놓은 plugin 파일들
   plugins: [
   ],
 

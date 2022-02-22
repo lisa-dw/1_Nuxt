@@ -34,7 +34,6 @@
 <script>
 import axios from "axios";
 
-// const URL_informs = 'http://127.0.0.1:8000/api/informs/1' ;
 const URL_informs = 'http://127.0.0.1:8000/api/informs/' ;
 
 export default {

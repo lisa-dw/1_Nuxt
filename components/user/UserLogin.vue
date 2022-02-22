@@ -17,6 +17,7 @@
       <v-text-field
         v-model="user.password"
         label="비밀번호"
+        type="password"
         required
       ></v-text-field>
 
@@ -82,11 +83,26 @@ export default {
   methods: {
 
     async login(){
+      console.log('실행되나?asd')
 
-      const res = await axios.get(URL_user + '/Login'+ this.user.userid)
-      console.log('실행되나?')
-      console.log(res)
-      alert(res.data)
+      try{
+
+        const res = await axios.get(URL_user + '/Login/'+ this.user.userid)
+
+        console.log('실행되나?')
+        console.log(res)
+        alert(res.data)
+
+        if(res.data === ''){
+
+        alert('로그인 되었습니다.')
+        await this.$router.push('/');
+        }
+
+      }catch (e){
+
+      }
+
     },
 
 
