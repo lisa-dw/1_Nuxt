@@ -86,7 +86,8 @@ export default {
       console.log('실행되나?asd')
 
       try{
-
+        //
+        // this.$axios.post('')~~~~
         const res = await axios.post(URL_user + '/login/',{
           userid: this.user.userid,
           password: this.user.password,
@@ -94,15 +95,17 @@ export default {
 
         console.log('실행되나?')
         console.log(res)
-        alert(res.data)
+        //alert(res.data)
 
         // if(res.data === ''){
         //
-        // alert('로그인 되었습니다.')
+        alert('로그인 되었습니다.')
         // await this.$router.push('/');
         // }
 
       }catch (e){
+
+        console.log(e.response)
 
       }
 
