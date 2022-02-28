@@ -1,6 +1,7 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
+
   <v-form
     ref="form"
     v-model="valid"
@@ -141,8 +142,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import {VueDaumPostcode} from "vue-daum-postcode"
+import axios from 'axios';
+import {VueDaumPostcode} from "vue-daum-postcode";
 
 const URL_user = 'http://localhost:8000/api/users'
 

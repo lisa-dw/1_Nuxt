@@ -15,7 +15,7 @@
 
       <!-- 이미지 -->
       <div id="imgDiv">
-        <v-img :src="inform.imgSrc" max-height="300" ></v-img>
+        <v-img :src="inform.imgSrc" max-height="300"/>
       </div>
       <div id="content">
         <br> {{inform.content}} <br>
