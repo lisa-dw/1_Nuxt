@@ -17,6 +17,7 @@
   {{product.productName}}<br>
   {{product.price}} <br>
 
+
   <button v-on:click="count -= 1" style="width: 10px">-</button>
     {{count}}
   <button v-on:click="count += 1">+</button> <br>
@@ -56,6 +57,7 @@ export default {
 
       products:[],
       count:1,
+      resultStock:'',
 
     }
   },
@@ -78,7 +80,6 @@ export default {
     // }),
 
 
-
     // 전체 데이터 가져오기.
     async readData(){
 
@@ -87,16 +88,20 @@ export default {
       console.log(this.$route.params.productId);
 
       const page = await axios.get(PD_url+this.$route.params.productId);
+
       console.log(page);
       console.log(page.data);
 
       this.product = page.data
+
       console.log(this.product.stock);
 
       console.log('잘 가져옴!');
     },
 
 
+
+    // 구매 버튼을 눌렀을 때
     async buy(){
 
       console.log('함수 실행됨?');
@@ -108,55 +113,26 @@ export default {
 
 
       //object로
-      let samplePayload = {
-        productName : 'productName',
-        price : 1000,
-        count : 3
-      }
-
-      //object로
-      let test = {
+      let productInform = {
+        productId : this.product.id,
         productName : this.product.productName,
         price : this.product.price,
-        count : this.count
+        counts : this.count
       }
-
-      //array 형태로 저장됨.
-      let samplePayloadArr = [
-        {
-          productName : 'productName',
-          price : 1000,
-          count : 3
-        },
-        {
-          productName : 'productName',
-          price : 1000,
-          count : 3
-        }
-      ]
-
-
-
-      // 밑에 둘 중 하나 쓰면 됨!
-      //buy.js 와 이어져 있음!!!!!ㅜㅜ 힘드러따......ㅜㅜ
-      // this.$store.dispatch('buy/addTodo', samplePayloadArr)
-      this.$store.commit('buy/setTodo', test)
-
-
-      console.log('스토어에 보내졌나?');
-
 
       //product의 stock -  구매한 물품의 수량을 확인하고,
       //구매 가능하면 구매 페이지로 넘어간다.
-      if(this.product.stock >= 0) {
-        // console.log('저장 되었나?');
-        // // 구매 목록 저장
-        // await axios.post(Buylist_url + this.buy_list.id, {
-        //   ...this.buy_list
-        // });
-        // console.log('저장 되었음!');
+      if(this.resultStock >= 0) {
 
-        // await this.$router.push('/Shopping/buy');
+        console.log('스토어에 보내졌나?');
+        this.$store.commit('buy/setBuyList', productInform)
+        console.log('스토어에 보내졌다!');
+
+        // alert('장바구니에 들어갔습니다.');
+
+        //바로 구매 페이지로 넘어감
+        await this.$router.push('/Shopping/buy');
+
       }
     },
 
@@ -166,10 +142,12 @@ export default {
       console.log(this.product.stock);
       console.log(this.count);
 
-      this.product.stock = this.product.stock -= this.count;
+      this.resultStock = this.product.stock -= this.count;
 
-      console.log('연산결과' + this.product.stock);
-      return this.product.stock;
+      console.log('연산결과' + this.resultStock);
+
+      return this.resultStock
+
     },
 
   },

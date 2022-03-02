@@ -6,6 +6,7 @@
         <template>
           <thead>
             <tr>
+<!--              <th>물품 번호</th>-->
               <th>구매 목록</th>
               <th>구매 수량</th>
               <th>총 가격</th>
@@ -14,11 +15,13 @@
 
           <tbody>
           <tr
-          v-for="(productName, price, count) in buylist"
-          :key="productName">
-            <th>{{productName}}</th> <!-- 구매하는 물품의 id 대신 이름을 가져오고 싶음. -->
-            <th>{{price}}</th>
-            <th>{{count}}</th>
+          v-for="(item) in getBuyList"
+          :key="item.productId">
+<!--            <th>{{item.productId}}</th>-->
+            <th>{{item.productName}}</th> <!-- 구매하는 물품의 id 대신 이름을 가져오고 싶음. -->
+            <th>{{item.counts}}</th>
+            <th>{{item.price * item.counts}}</th>
+
           </tr>
           </tbody>
         </template>
@@ -109,6 +112,8 @@
 import axios from "axios";
 import {VueDaumPostcode} from "vue-daum-postcode";
 
+import {mapGetters} from 'vuex';
+
 const Buylist_url = 'http://localhost:8000/api/buyLists';
 const BuyInform_url = 'http://localhost:8000/api/buyUserInforms';
 
@@ -120,14 +125,16 @@ export default {
   data() {
     return {
       product:{
-        stock:'',
+        id: '', // 제품 번호
+        stock:'',       // 재고
       },
 
       buy_list:{
         id:'',          //주문 번호
-        product_id: '', // 제품 번호
+        product_id: '', // 제품 번호    // product 테이블과 FK키
         count:'',       // 갯수
         price:'',       // 총 가격
+
       },
 
       buy_lists: [],
@@ -135,6 +142,7 @@ export default {
       buy_user_inform: {
         id:'',
         buy_list_id: '', //  buy_list 테이블과 FK키
+        user_id: '',     //  user 테이블과 FK키
         name: '',
         phone: '',
         address: '',
@@ -155,29 +163,55 @@ export default {
     }
   },
 
+
   computed:{
+
+    ...mapGetters({
+      getBuyList : 'buy/getBuyList',
+      // getUserInform : 'user/~~~~'
+    }),
+
 
   },
 
   methods:{
     async Buy(){
 
+      try{
 
+        const req = {
+          ...this.getBuyList,
+          ...this.getUserInform
+        }
 
-      // // 구매 목록 저장
-      // const res = await axios.post(Buylist_url+this.buy_list.id, {
-      //   ...this.buy_list
-      // });
+        // 구매 목록 저장
+        const res = await axios.post(Buylist_url+this.buy_list.id, {
+          ...this.buy_list
+        });
 
-      // 구매자의 배송지 저장.
-      const res2 = await axios.post(BuyInform_url+this.buy_user_inform.id, {
-        ...this.buy_user_inform
-      })
+        console.log(res)
 
-      // 결제창 또는 어딘가로 가는 경로.
-      await this.$router.push('');
+        // 구매자의 배송지 저장.
+        const res2 = await axios.post(BuyInform_url+this.buy_user_inform.id, {
+          ...this.buy_user_inform
+        })
 
+        // 구매자 정보 저장(user_id)
+
+        console.log(res2)
+
+        alert('구매가 완료되었습니다.')
+
+        // 결제창 또는 어딘가로 가는 경로.
+        await this.$router.push('');
+
+      }catch (e){
+
+        alert('구매에 실패하였습니다.')
+
+      }
     },
+
 
 
     // 주소 찾기 api 메서드
@@ -221,6 +255,7 @@ export default {
       this.postOpen = true
     },
 
+    // 주소찾기 api 창 닫기
     async close(){
       this.postOpen = false
     }
