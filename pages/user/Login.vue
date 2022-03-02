@@ -1,19 +1,20 @@
 <template>
 
-
-  <user-login/> <!-- 컴포넌트로 로그인 페이지 조립 -->
+  <user-test/>   <!-- 잠시 테스트 컴포넌트로 교체 -->
 
 </template>
 
 
 
 <script>
-import UserLogin from "../../components/user/UserLogin";
+
+import UserTest from "../../components/user/UserTest";
 
 export default {
   name: "Login",
-  components: {UserLogin}
+  components: {UserTest},
 }
+
 </script>
 
 
