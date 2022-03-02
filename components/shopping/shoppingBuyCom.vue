@@ -13,10 +13,12 @@
           </thead>
 
           <tbody>
-          <tr>
-            <th>{{buy_list.product_id}}</th> <!-- 구매하는 물품의 id 대신 이름을 가져오고 싶음. -->
-            <th>{{buy_list.count}}</th>
-            <th>{{buy_list.price}}</th>
+          <tr
+          v-for="(productName, price, count) in buylist"
+          :key="productName">
+            <th>{{productName}}</th> <!-- 구매하는 물품의 id 대신 이름을 가져오고 싶음. -->
+            <th>{{price}}</th>
+            <th>{{count}}</th>
           </tr>
           </tbody>
         </template>
@@ -153,8 +155,14 @@ export default {
     }
   },
 
+  computed:{
+
+  },
+
   methods:{
     async Buy(){
+
+
 
       // // 구매 목록 저장
       // const res = await axios.post(Buylist_url+this.buy_list.id, {

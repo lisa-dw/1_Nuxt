@@ -16,6 +16,7 @@
     "@websanova/vue-auth": "^4.1.11",
     "audit": "^0.0.6",
     "cache": "^2.3.1",
+    "cookie": "^0.4.2",
     "core-js": "^3.19.3",
     "js-cookie": "^3.0.1",
     "nuxt": "^2.15.8",
