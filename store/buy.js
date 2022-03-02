@@ -51,6 +51,7 @@ export const mutations = {
   },
 
 
+
   removeBuyList(state, payload) {
     state.buyLists.splice(state.buyLists.indexOf(payload), 1)
   },

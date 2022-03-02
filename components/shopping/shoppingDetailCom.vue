@@ -104,6 +104,12 @@ export default {
     // 구매 버튼을 눌렀을 때
     async buy(){
 
+      if (this.count <= 0) {
+        alert('수량을 다시 선택해주세요.')
+        await this.$router.go()
+      }
+      else
+
       console.log('함수 실행됨?');
 
       // 재고 - 구매수량 연산 메서드 실행.

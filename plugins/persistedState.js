@@ -11,7 +11,7 @@ export default ({store, req}) => {
 
     //paths: ["example"] => vuex-persistedstate의 옵션
     //path 배열 안에 store들만 저장하겠다는 표현.
-    paths: ["store"],
+    paths: ["userState"],
 
     storage: {
 
