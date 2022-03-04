@@ -10,9 +10,10 @@
 
 <script>
 import ShoppingCartCom from "../../components/shopping/shoppingCartCom";
+
 export default {
   name: "cart",
-  components: {ShoppingCartCom}
+  components: {ShoppingCartCom},
 }
 </script>
 

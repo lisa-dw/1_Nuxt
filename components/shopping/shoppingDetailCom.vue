@@ -26,18 +26,18 @@
 </tr>
   </v-simple-table>
 
-  <v-btn @click="buy">Buy</v-btn>
+  <v-btn @click="cart">CART</v-btn>
+  <v-btn @click="buy">BUY</v-btn>
   </div>
 </template>
 
 
 
-
 <script>
 import axios from "axios";
+import {mapGetters} from "vuex";
 
 const PD_url = 'http://localhost:8000/api/products/';
-const buy_url = 'http://localhost:8000/api/buyLists';
 
 export default {
   name: "shoppingDetailCom",
@@ -59,6 +59,9 @@ export default {
       count:1,
       resultStock:'',
 
+      makeNum1: '',
+
+
     }
   },
 
@@ -69,99 +72,140 @@ export default {
   },
 
   computed:{
-    // ...mapGetters({
-    //   getBuy: 'modules/buyStore/getBuy'
-    // })
+    ...mapGetters({
+      getUser: 'userState/getUser'
+    })
   },
 
   methods:{
-    // ...mapActions({
-    //   buyAc: 'modules/buyStore/buyAc'
-    // }),
-
 
     // 전체 데이터 가져오기.
     async readData(){
 
-      console.log('잘 가져옴?');
-      console.log(PD_url);
-      console.log(this.$route.params.productId);
-
       const page = await axios.get(PD_url+this.$route.params.productId);
-
-      console.log(page);
-      console.log(page.data);
-
       this.product = page.data
 
-      console.log(this.product.stock);
-
-      console.log('잘 가져옴!');
     },
 
+    // 장바구니 버튼을 클릭했을 때
+    async cart(){
+
+      if (this.count <= 0)
+          {
+            alert('수량을 다시 선택해주세요.')
+          }
+      else {
+          // 재고 - 구매수량 연산 메서드 실행.
+          await this.calcul();
+
+          //object로
+          let productInform = {
+            productId : this.product.id,
+            productName : this.product.productName,
+            price : this.product.price,
+            sumPrice : this.product.price * this.count,
+            counts : this.count,
+            img : this.product.productImage
+          }
+
+        console.log('this.getUser.cartNumber')
+          console.log(this.getUser.cartNumber)
+
+        // 만약에 유저 스토어에 cartNumber가 없다면.
+        if(this.getUser.cartNumber == null || this.getUser.cartNumber === '') {
+          //랜덤숫자 만드는 메서드 실행
+          this.makeNumber();
+          let buyNumber = this.makeNum1 + '2'
+          console.log('buyNumber')
+          console.log(buyNumber)
+          this.$store.commit('userState/setCartNumber', buyNumber)
+        }
+
+        // 만약에 해당 상품에 재고가 남아있다면, 상품의 정보를 buy 스토어에 저장해라.
+        if(this.resultStock >= 0) {
+          this.$store.commit('buy/setBuyList', productInform)
+
+            alert('장바구니에 추가 되었습니다.')
+          }
+      }
+
+    },
 
 
     // 구매 버튼을 눌렀을 때
     async buy(){
 
-      if (this.count <= 0) {
+      if (this.count <= 0)
+      {
         alert('수량을 다시 선택해주세요.')
-        await this.$router.go()
       }
       else
+      {
 
-      console.log('함수 실행됨?');
+        console.log('어디가 안되는거야??')
+        // 재고 - 구매수량 연산 메서드 실행.
+        await this.calcul();
 
-      // 재고 - 구매수량 연산 메서드 실행.
-      await this.calcul();
+        //object로
+        let productInform2 = {
+          productId : this.product.id,
+          productName : this.product.productName,
+          price : this.product.price,
+          sumPrice : this.product.price * this.count,
+          counts : this.count,
+          img : this.product.productImage
+        }
 
-      console.log('연산됨!');
+        console.log('this.getUser.buyNumber')
+        console.log(this.getUser.buyNumber)
 
+        // 만약에 유저 스토어에 buyNumber가 없다면.
+        if(this.getUser.buyNumber == null || this.getUser.buyNumber === '') {
+          //랜덤숫자 만드는 메서드 실행
+          this.makeNumber();
 
-      //object로
-      let productInform = {
-        productId : this.product.id,
-        productName : this.product.productName,
-        price : this.product.price,
-        counts : this.count
+          let buyNumber2 = this.makeNum1 + '1'
+          this.$store.commit('userState/setBuyNumber', buyNumber2)
+        }
+
+        //product의 stock -  구매한 물품의 수량을 확인하고,
+        //구매 가능하면 구매 페이지로 넘어간다.
+        if(this.resultStock >= 0) {
+          this.$store.commit('buy/setBuyList', productInform2)
+
+          //바로 구매 페이지로 넘어감
+          await this.$router.push('/Shopping/buy');
+        }
       }
 
-      //product의 stock -  구매한 물품의 수량을 확인하고,
-      //구매 가능하면 구매 페이지로 넘어간다.
-      if(this.resultStock >= 0) {
-
-        console.log('스토어에 보내졌나?');
-        this.$store.commit('buy/setBuyList', productInform)
-        console.log('스토어에 보내졌다!');
-
-        // alert('장바구니에 들어갔습니다.');
-
-        //바로 구매 페이지로 넘어감
-        await this.$router.push('/Shopping/buy');
-
-      }
     },
+
 
     // 재고 - 구매수량 연산 메서드
     calcul(){
-      console.log('calcul 함수 실행됨?');
-      console.log(this.product.stock);
-      console.log(this.count);
-
       this.resultStock = this.product.stock -= this.count;
-
-      console.log('연산결과' + this.resultStock);
-
       return this.resultStock
-
     },
+
+
+    // 장바구니/ 카트 아이디 만드는 메서드
+    makeNumber(){
+      let today = new Date()
+      let year = today.getFullYear();
+      let month = ('0' + (today.getMonth() + 1)).slice(-2);
+      let day = ('0' + today.getDate()).slice(-2);
+      let hours = ('0' + today.getHours()).slice(-2);
+      let minutes = ('0' + today.getMinutes()).slice(-2);
+      let seconds = ('0' + today.getSeconds()).slice(-2);
+      this.makeNum1 = year + month + day + hours + minutes + seconds + this.getUser.id
+    }
 
   },
 
-
-
 }
 </script>
+
+
 
 <style scoped>
 

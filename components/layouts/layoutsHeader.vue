@@ -18,8 +18,9 @@
       <v-list-item link>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
-            {{ profile.name }}
+            {{ this.getUser.name }} 님
           </v-list-item-title>
+          <br><br>
           <v-list-item-subtitle>{{ profile.message }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -54,13 +55,6 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"  />
 
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-
       <v-toolbar-title v-text="title" />
 
       <!--로그인 버튼, 회원가입 버튼-->
@@ -68,7 +62,12 @@
 
         <v-btn :to="Join.to">{{ Join.title }}</v-btn>
         <v-btn :to="Login.to">{{ Login.title }}</v-btn>
-
+      <!--장바구니 아이콘-->
+      <v-btn icon :to="Cart.to">
+        <v-icon color="grey lighten-1">
+          mdi-cart
+        </v-icon>
+      </v-btn>
 
     </v-app-bar>
 
@@ -77,6 +76,8 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: "layoutsHeader",
 
@@ -106,7 +107,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Project',
+      title: 'PROJECT',
 
       Login:{
         title: 'Login',
@@ -116,13 +117,23 @@ export default {
         title: 'Join',
         to: '/user/userJoin',
       },
+      Cart:{
+        to: '/Shopping/cart'
+      },
 
       profile:{
-        name:'비회원',
-        message:'방문하신 것을 환영합니다.',
+        name: '',
+        message:'방문하신 것을 환영합니다:)',
       },
 
     }
-  }
+  },
+
+  computed:{
+    ...mapGetters({
+      getUser: 'userState/getUser'
+    })
+  },
+
 }
 </script>

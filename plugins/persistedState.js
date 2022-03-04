@@ -9,7 +9,7 @@ export default ({store, req}) => {
 
   createPersistedState({
 
-    //paths: ["example"] => vuex-persistedstate의 옵션
+    //paths:  => vuex-persistedstate의 옵션
     //path 배열 안에 store들만 저장하겠다는 표현.
     paths: ["userState"],
 
