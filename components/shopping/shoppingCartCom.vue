@@ -150,6 +150,13 @@ export default {
 
       let ResultMap2 = this.getBuyList.map((x)=> { return x.counts })
       this.sumCount = ResultMap2.reduce((a, b) => a + b, 0)
+
+      let sums = {
+        sumPay : this.sumPay,
+        sumCount : this.sumCount
+      }
+
+      this.$store.commit('userState/setSum', sums )
     },
 
     // 장바구니/ 카트 아이디 만드는 메서드

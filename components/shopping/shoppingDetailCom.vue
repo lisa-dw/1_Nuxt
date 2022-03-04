@@ -149,7 +149,6 @@ export default {
       }
       else
       {
-
         console.log('어디가 안되는거야??')
         // 재고 - 구매수량 연산 메서드 실행.
         await this.calcul();
