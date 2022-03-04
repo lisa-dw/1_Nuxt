@@ -63,6 +63,8 @@ export default {
 
       makeNum1: '',
 
+      sumPay: '',
+      sumCount: '',
 
     }
   },
@@ -75,7 +77,8 @@ export default {
 
   computed:{
     ...mapGetters({
-      getUser: 'userState/getUser'
+      getUser: 'userState/getUser',
+      getBuyList: 'buy/getBuyList',
     })
   },
 
@@ -126,6 +129,7 @@ export default {
         // 만약에 해당 상품에 재고가 남아있다면, 상품의 정보를 buy 스토어에 저장해라.
         if(this.resultStock >= 0) {
           this.$store.commit('buy/setBuyList', productInform)
+          this.sumss();
           alert('장바구니에 추가 되었습니다.')
           }
         else {
@@ -160,8 +164,6 @@ export default {
           img : this.product.productImage
         }
 
-        console.log('this.getUser.buyNumber')
-        console.log(this.getUser.buyNumber)
 
         // 만약에 유저 스토어에 buyNumber가 없다면.
         if(this.getUser.buyNumber == null || this.getUser.buyNumber === '') {
@@ -172,11 +174,13 @@ export default {
           this.$store.commit('userState/setBuyNumber', buyNumber2)
         }
         console.log('어디가 안되는거야??ss')
+
         //product의 stock -  구매한 물품의 수량을 확인하고,
         //구매 가능하면 구매 페이지로 넘어간다.
         if(this.resultStock >= 0) {
           this.$store.commit('buy/setBuyList', productInform2)
-
+          //물건의 가격 등을 계산하고,
+          this.sumss();
           //바로 구매 페이지로 넘어감
           await this.$router.push('/Shopping/buy');
         } else {
@@ -191,6 +195,24 @@ export default {
     calcul(){
       this.resultStock = this.product.stock -= this.count;
       return this.resultStock
+    },
+
+    // 총 가격 계산 메서드
+    // this.getBuyList의 모든 인덱스의 sumPrice 키의 값들을 다시 배열로 만들고,
+    // 그 배열 안의 값들을 다 더해준 것.
+    sumss(){
+      let ResultMap = this.getBuyList.map((x)=> { return x.sumPrice })
+      this.sumPay = ResultMap.reduce((a, b) => a + b, 0)
+
+      let ResultMap2 = this.getBuyList.map((x)=> { return x.counts })
+      this.sumCount = ResultMap2.reduce((a, b) => a + b, 0)
+
+      let sums = {
+        sumPay : this.sumPay,
+        sumCount : this.sumCount
+      }
+
+      this.$store.commit('userState/setSum', sums)
     },
 
 

@@ -189,8 +189,6 @@ export default {
   mounted() {
 
     this.changeUserInform();
-    console.log('this.getBuyList')
-    console.log(this.getBuyList)
 
   },
 
@@ -279,7 +277,6 @@ export default {
 
       }
     },
-
 
 
     // 재고 - 구매수량 연산 메서드 ( 서버에서 재고를 가져와야 함 )

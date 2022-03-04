@@ -35,9 +35,6 @@
               <!--상품명-->
               <v-card-title><b>{{ item.productName}}</b></v-card-title>
 
-
-
-
               <v-divider class="mx-4"></v-divider>
               <!--# 하단 시작-->
 

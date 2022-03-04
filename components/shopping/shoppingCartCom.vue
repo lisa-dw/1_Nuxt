@@ -44,8 +44,8 @@
       </thead>
       <tbody>
         <tr>
-          <th>{{this.sumCount}} 개</th>
-          <th>{{this.sumPay}} 원</th>
+          <th>{{getUser.sumCount}} 개</th>
+          <th>{{getUser.sumPay}} 원</th>
         </tr>
       </tbody>
     </v-simple-table>
@@ -86,12 +86,6 @@ export default {
       // allChecked: false,
 
     }
-  },
-
-  mounted() {
-
-    this.sums();
-
   },
 
   computed:{
@@ -150,8 +144,6 @@ export default {
 
 
     // 총 가격 계산 메서드
-    // this.getBuyList의 모든 인덱스의 sumPrice 키의 값들을 다시 배열로 만들고,
-    // 그 배열 안의 값들을 다 더해준 것.
     sums(){
       let ResultMap = this.getBuyList.map((x)=> { return x.sumPrice })
       this.sumPay = ResultMap.reduce((a, b) => a + b, 0)
