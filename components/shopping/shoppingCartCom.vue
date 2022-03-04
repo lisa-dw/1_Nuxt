@@ -2,7 +2,7 @@
   <div>
 
     <br> <h1> 장바구니 </h1> <br>
-    <h5>장바구니 번호 : {{getUser.cartNumber}}</h5> <br>
+<!--    <h5>장바구니 번호 : {{getUser.cartNumber}}</h5> <br>-->
 
 <!-- 물품 리스트 테이블 -->
   <v-simple-table>
@@ -124,22 +124,32 @@ export default {
     // 구매 버튼
     async buy(){
 
-      let sums = {
-        sumPay : this.sumPay,
-        sumCount : this.sumCount
+      console.log('this.getBuyList')
+      console.log(this.getBuyList)
+
+      if(this.getBuyList.length===0) {
+
+        alert('장바구니가 비었습니다.')
+
+      } else {
+
+        let sums = {
+          sumPay: this.sumPay,
+          sumCount: this.sumCount
+        }
+
+        this.$store.commit('userState/setSum', sums)
+
+        if (this.getUser.buyNumber == null || this.getUser.buyNumber === '') {
+          //랜덤숫자 만드는 메서드 실행
+          this.makeNumber();
+
+          let buyNumber2 = this.makeNum1 + '1'
+          this.$store.commit('userState/setBuyNumber', buyNumber2)
+        }
+
+        await this.$router.push('/Shopping/buy')
       }
-
-      this.$store.commit('userState/setSum', sums)
-
-      if(this.getUser.buyNumber == null || this.getUser.buyNumber === '') {
-        //랜덤숫자 만드는 메서드 실행
-        this.makeNumber();
-
-        let buyNumber2 = this.makeNum1 + '1'
-        this.$store.commit('userState/setBuyNumber', buyNumber2)
-      }
-
-      await this.$router.push('/Shopping/buy')
     },
 
 
@@ -179,9 +189,7 @@ export default {
       })
     },
 
-
   },
-
 
 }
 </script>

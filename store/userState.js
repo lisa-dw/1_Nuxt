@@ -12,7 +12,7 @@ export const state = () => ({
     address: '인천 미추홀구 독배로 443',
     subAddress: ' (숭의동, 삼화복합빌딩)',
 
-    cartNumber : '',   // 카트 번호
+    cartNumber : '',   // 카트 번호 // 장바구니번호는 로그인 시에 생성되게도 해야 함.
     buyNumber : '',   // 구매목록 번호
 
     sumPay : '',       //구매목록의 총 가격

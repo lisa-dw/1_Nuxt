@@ -120,7 +120,7 @@
         :disabled="!valid"
         @click="Buy"
       >
-        결재
+        결제
       </v-btn>
 
 
@@ -232,7 +232,7 @@ export default {
 
       console.log('어디까지 왔니?')
       try{
-
+        
         console.log('어디까지 왔니?2')
         console.log(this.buy_user_inform)
 
