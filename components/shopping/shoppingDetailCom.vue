@@ -1,7 +1,7 @@
 <template>
 <div>
-  <v-simple-table>
 
+  <v-simple-table>
 <tr>
   <td>
     <v-img
@@ -13,6 +13,7 @@
 
   <td>
     <h1>{{product.title}}</h1> <br>
+    <h2>{{product.productName}}</h2>
   {{product.contents}}<br>
   {{product.productName}}<br>
   {{product.price}} <br>
@@ -25,6 +26,7 @@
   </td>
 </tr>
   </v-simple-table>
+
 
   <v-btn @click="cart">CART</v-btn>
   <v-btn @click="buy">BUY</v-btn>
@@ -124,9 +126,11 @@ export default {
         // 만약에 해당 상품에 재고가 남아있다면, 상품의 정보를 buy 스토어에 저장해라.
         if(this.resultStock >= 0) {
           this.$store.commit('buy/setBuyList', productInform)
-
-            alert('장바구니에 추가 되었습니다.')
+          alert('장바구니에 추가 되었습니다.')
           }
+        else {
+          alert('해당 상품의 재고가 부족합니다.')
+        }
       }
 
     },
@@ -167,7 +171,7 @@ export default {
           let buyNumber2 = this.makeNum1 + '1'
           this.$store.commit('userState/setBuyNumber', buyNumber2)
         }
-
+        console.log('어디가 안되는거야??ss')
         //product의 stock -  구매한 물품의 수량을 확인하고,
         //구매 가능하면 구매 페이지로 넘어간다.
         if(this.resultStock >= 0) {
@@ -175,6 +179,8 @@ export default {
 
           //바로 구매 페이지로 넘어감
           await this.$router.push('/Shopping/buy');
+        } else {
+          alert('해당 상품의 재고가 부족합니다.')
         }
       }
 

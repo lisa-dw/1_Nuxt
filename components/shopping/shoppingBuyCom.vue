@@ -3,7 +3,7 @@
     <!-- 주문한 품목 리스트, 테이블 형식으로 보여줌. -->
     <div>
       <br>
-       <h6>주문번호 : {{getUser.buyNumber}}</h6>
+       <h6>주문번호 : {{buy_list.order_num}}</h6>
       <br>
 
       <v-simple-table>
@@ -41,8 +41,8 @@
         </thead>
         <tbody>
           <tr>
-            <th>{{this.sumCount}}</th>
-            <th>{{this.sumPay}}</th>
+            <th>{{getUser.sumCount}}</th>
+            <th>{{getUser.sumPay}}</th>
           </tr>
         </tbody>
       </v-simple-table>
@@ -120,7 +120,7 @@
         :disabled="!valid"
         @click="Buy"
       >
-        결제
+        결재
       </v-btn>
 
 
@@ -152,29 +152,26 @@ export default {
       }],
 
       buy_list:[{
-        id:'',           //주문 번호
-        product_id: '',  // 제품 번호    // product 테이블과 FK키
-        productName:'',  //  제품 이름
+        order_num:'',    // 주문번호
+        product_id: '',  // 제품 번호// product 테이블과 FK키
+        // productName:'',  //  제품 이름
         count:'',        // 갯수
         price:'',        // 총 가격
       }],
 
       // buy_user_inform: {
       //   id: this.getUser.id,
-      //   buy_list_id: '', //  buy_list 테이블과 FK키
       //   created_at: '',
       // },
 
       buy_user_inform: {
-        id: '',
-        buy_list_id: '', //  buy_list 테이블과 FK키
-        user_id: '',     //  user 테이블과 FK키
+        order_num:'',    // 주문번호
+        user_id: 0,     //  user 테이블과 FK키
         name: '',
         phone: '',
         address: '',
         zip: '',
         subAddress: '',
-        created_at: '',
       },
 
       rules: [
@@ -191,8 +188,7 @@ export default {
 
   mounted() {
 
-    this.change();
-    this.sums();
+    this.changeUserInform();
     console.log('this.getBuyList')
     console.log(this.getBuyList)
 
@@ -213,57 +209,64 @@ export default {
 
     // 스토어의 변수들을 디비에 저장하기 위하여 현제 페이지의 data에
     // 다시 옮겨주는 메서드.
-    async change(){
+    async changeUserInform(){
 
       console.log(this.getUser)
 
-      this.buy_user_inform.user_id = this.getUser.userid
+      // 배송지 정보
+      this.buy_user_inform.user_id = this.getUser.id
       this.buy_user_inform.name = this.getUser.name
       this.buy_user_inform.phone = this.getUser.phone
       this.buy_user_inform.zip = this.getUser.zip
       this.buy_user_inform.address = this.getUser.address
       this.buy_user_inform.subAddress = this.getUser.subAddress
-
-      this.product.stock = this.product.stock
-
-      console.log(this.buy_user_inform)
-
-      console.log(this.getBuyList)
-
-      // this.buy_list.count = this.getBuyList.counts
-      // console.log(this.buy_list.count)
-
-
+      // 구매 목록번호
+      this.buy_list.order_num = this.getUser.buyNumber
+      this.buy_user_inform.order_num = this.getUser.buyNumber
     },
 
+    async changeBuy(){
+    //
+    },
 
     // 구매 버튼 메서드
     async Buy(){
 
-
+      console.log('어디까지 왔니?')
       try{
 
-        // 구매 목록 저장
-        const res = await axios.post(Buylist_url+this.buy_list.id, {
-          //...this.buy_list
-          buyList: [{
-            ...this.buy_list,
-          }],
-          // buyUser: {
-          //   ...this.buy_user_inform,
-          // },
-        });
-
-        console.log(res)
+        console.log('어디까지 왔니?2')
+        console.log(this.buy_user_inform)
 
         // 구매자의 배송지 저장.
-        const res2 = await axios.post(BuyInform_url+this.buy_user_inform.id, {
+        const res2 = await axios.post(BuyInform_url, {
           ...this.buy_user_inform
         })
-
-        // 구매자 정보 저장(user_id)
+        console.log('어디까지 왔니?3')
 
         console.log(res2)
+        console.log(this.getBuyList)
+
+        let buylist_request = this.getBuyList.map(v => {
+          console.log(v)
+          let v_ = {}
+          v_.product_id = v.productId
+          v_.count = v.counts
+          v_.price = v.sumPrice
+          v_.order_num = this.buy_user_inform.order_num
+          return v_
+        });
+
+        console.log('buylist_request')
+        console.log(buylist_request)
+        // return;
+
+        // 구매 목록 저장
+        const res = await axios.post(Buylist_url, [buylist_request]);
+
+        console.log('어디까지 왔니?4')
+        console.log(res)
+
 
         alert('구매가 완료되었습니다.')
 
@@ -279,7 +282,6 @@ export default {
 
 
 
-
     // 재고 - 구매수량 연산 메서드 ( 서버에서 재고를 가져와야 함 )
     // 각 물품당 재고 검사를 한번씩 해야 하는데, 맵퍼를 써서 돌려야 할까.. 아니면...
     // 우선 보류
@@ -291,17 +293,6 @@ export default {
     //   this.resultStock = this.product.stock -= this.count;
     //   return this.resultStock
     // },
-
-
-    //  // 총 가격, 갯수 계산 메서드
-    async sums(){
-      let ResultMap = this.getBuyList.map((x)=> { return x.sumPrice })
-      this.sumPay = ResultMap.reduce((a, b) => a + b, 0)
-
-      let ResultMap2 = this.getBuyList.map((x)=> { return x.counts })
-      this.sumCount = ResultMap2.reduce((a, b) => a + b, 0)
-    },
-
 
 
     // 주소 찾기 api 메서드

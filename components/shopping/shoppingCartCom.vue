@@ -130,24 +130,12 @@ export default {
     // 구매 버튼
     async buy(){
 
-      // console.log(this.sumPay)
-      // console.log(this.sumCount)
-      //
-      // let sums = {
-      //   sumPay : this.sumPay,
-      //   sumCount : this.sumCount
-      // }
-      //
-      // console.log('sums')
-      // console.log(sums)
+      let sums = {
+        sumPay : this.sumPay,
+        sumCount : this.sumCount
+      }
 
-      // // 왜 안되는지......ㅜㅜ
-      // this.$store.commit('buy/setBuySum', sums)
-      // console.log('여기가 안되는건가?..')
-
-      // 만약에 유저 스토어에 buyNumber가 없다면.
-      console.log('this.getUser.buyNumber')
-      console.log(this.getUser.buyNumber)
+      this.$store.commit('userState/setSum', sums)
 
       if(this.getUser.buyNumber == null || this.getUser.buyNumber === '') {
         //랜덤숫자 만드는 메서드 실행
@@ -164,19 +152,6 @@ export default {
     // 총 가격 계산 메서드
     // this.getBuyList의 모든 인덱스의 sumPrice 키의 값들을 다시 배열로 만들고,
     // 그 배열 안의 값들을 다 더해준 것.
-    // sumPrices() {
-    //   let ResultMap = this.getBuyList.map((x)=> { return x.sumPrice })
-    //   this.sumPay = ResultMap.reduce((a, b) => a + b, 0)
-    //
-    //   return this.sumPay
-    // },
-    //
-    // sumCounts(){
-    //   let ResultMap2 = this.getBuyList.map((x)=> { return x.counts })
-    //   this.sumCount = ResultMap2.reduce((a, b) => a + b, 0)
-    //
-    //   return this.sumCount
-    // },
     sums(){
       let ResultMap = this.getBuyList.map((x)=> { return x.sumPrice })
       this.sumPay = ResultMap.reduce((a, b) => a + b, 0)
@@ -197,7 +172,8 @@ export default {
       this.makeNum1 = year + month + day + hours + minutes + seconds + this.getUser.id
     },
 
-    // 체크박스 전체 선택 구현 하려고 했으나.....
+
+    // 체크박스 전체 선택 구현 하려고 했으나.......
     all(all){
       const checks = document.querySelectorAll('v-checkbox');
       checks.forEach((checkbox) => {checkbox.checked = all.checked
